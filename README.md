@@ -1,10 +1,12 @@
-#De Bruijn Poly Linker
+# De Bruijn Poly Linker
+
 A polylinker is a fragment of DNA that contains multiple target sites for different restriction enzymes, which can then be injected into a genome to offer target motifs to restriction enzymes which cut DNA into fragments. An optimal poly linker for a set of target motifs is the shortest sequence that contains each motif once.
 
 This project attempts to construct an optimal poly linker from a set of target motifs by constructing a de bruijn graph from the motifs and finding the shortest Euclidean path through the graph that does not introduce each motif into the sequence more than once.
  
 
-##Getting started
+## Getting started
+
 Install required tools with \`make wintools`
 
 Build the project with `make build` will produce a binary in the root of the project directory
