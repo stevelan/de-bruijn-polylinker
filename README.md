@@ -21,3 +21,15 @@ Plan is loosely this:
 * DeBruijn graphs are good at finding the shortest path/s through a set of sequences
 * Gets slightly complicated when you account for REs that can have ambiguous motifs i.e. ATGANNNNATTG when N is any base.
 * Write a module that takes a list of motifs and finds the shortest overlapping arrangement.
+
+
+## Research links
+
+https://www.sciencedirect.com/science/article/pii/0022000080900045
+https://pkg.go.dev/gonum.org/v1/gonum/stat/combin
+https://medium.com/@omidahn/chapter-5-data-structures-and-algorithms-in-go-c13c88c2a238
+
+
+## Note dump
+C(n,k)=n!/(k!(n-k)!)
+
