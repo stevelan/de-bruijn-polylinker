@@ -1,4 +1,4 @@
-# De Bruijn Poly Linker
+# Poly Linker
 
 A polylinker is a fragment of DNA that contains multiple target sites for different restriction enzymes, which can then be injected into a genome to offer target motifs to restriction enzymes which cut DNA into fragments. An optimal poly linker for a set of target motifs is the shortest sequence that contains each motif once.
 
