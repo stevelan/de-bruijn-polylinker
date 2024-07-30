@@ -33,3 +33,4 @@ https://medium.com/@omidahn/chapter-5-data-structures-and-algorithms-in-go-c13c8
 ## Note dump
 C(n,k)=n!/(k!(n-k)!)
 
+Exclusion patterns / motifs

@@ -8,8 +8,9 @@ import (
 )
 
 type superstring struct {
-	motifIndices []int
-	value        string
+	motifIndices  []int
+	value         string
+	sizeReduction int
 }
 
 func main() {
@@ -21,19 +22,20 @@ func PolyLinker(motifs []string) string {
 
 	workingMotifs := motifs
 	count := 0
-	for len(workingMotifs) >= 3 {
+	for len(workingMotifs) >= 2 {
 
 		n := len(workingMotifs)
 		k := 3
-		if n < 3 {
+		if n < k {
 			k = n
 		}
-		fmt.Printf("Generating permutations with k = %d, n = %d ", k, n)
+		fmt.Printf("\n***** Generating permutations with k = %d, n = %d \n", k, n)
 		gen := combin.NewPermutationGenerator(n, k)
 
 		smallest := superstring{
-			motifIndices: nil,
-			value:        "",
+			motifIndices:  nil,
+			value:         "",
+			sizeReduction: -1,
 		}
 
 		for gen.Next() {
@@ -41,37 +43,36 @@ func PolyLinker(motifs []string) string {
 
 			candidate := ""
 			for i := 0; i < len(picks); i++ {
-				candidate = join(candidate, motifs[picks[i]])
+				candidate = join(candidate, workingMotifs[picks[i]])
 			}
-			fmt.Println(candidate)
-			if smallest.value == "" || len(candidate) < len(smallest.value) {
-				smallest = superstring{motifIndices: picks, value: candidate}
+
+			reduction := calcSizeReduction(candidate, workingMotifs, picks)
+			if reduction > smallest.sizeReduction {
+				smallest = superstring{motifIndices: picks, value: candidate, sizeReduction: reduction}
 			} // else haven't found a smaller join
 			count++
-			if count > 1_000_000 {
+			// this is just for development when playing with different values of k,
+			if count > 10_000_000 {
 				panic(strconv.Itoa(count) + " too large")
 			}
-			fmt.Println(count)
+			if count%1000 == 0 {
+				fmt.Printf("%d loops iterated - Current motifs: %d - %v\n", count, len(workingMotifs), workingMotifs)
+			}
 
 		}
 		workingMotifs = removeElements(workingMotifs, smallest.motifIndices)
 		workingMotifs = append(workingMotifs, smallest.value)
-		fmt.Println(workingMotifs)
+		fmt.Printf("Added %s to %s\n", smallest.value, workingMotifs)
 	}
-	fmt.Println(len(workingMotifs))
-	if len(workingMotifs) == 2 { //TODO handle joining in the right order if has prefix of the other
-		return join(workingMotifs[0], workingMotifs[1])
-	} else {
-		return workingMotifs[0]
-	}
+
+	return workingMotifs[0]
 }
 
 func removeElements(slice []string, indices []int) []string {
-	fmt.Printf("Removing %v from %v", indices, slice)
+	fmt.Printf("Removing %v from %v\n", indices, slice)
 	sorted := make([]int, len(indices))
 	copy(sorted, indices)
 	sort.Ints(sorted)
-	fmt.Println(sorted)
 	for i := len(sorted) - 1; i >= 0; i-- {
 		index := sorted[i]
 		slice = append(slice[:index], slice[index+1:]...)
@@ -95,7 +96,7 @@ func join(left string, right string) string {
 func findSuffix(left string, right string) string {
 	for i := 0; i < len(left); i++ {
 		if right[0] == left[i] {
-			prefix := left[i:len(left)]
+			prefix := left[i:]
 			if isPrefix(prefix, right) {
 				return prefix
 			}
@@ -112,4 +113,13 @@ func isPrefix(prefix string, target string) bool {
 		}
 	}
 	return true
+}
+
+func calcSizeReduction(candidate string, motifs []string, picks []int) int {
+	candidateLen := len(candidate)
+	originalLen := 0
+	for _, pick := range picks {
+		originalLen += len(motifs[pick])
+	}
+	return originalLen - candidateLen
 }
